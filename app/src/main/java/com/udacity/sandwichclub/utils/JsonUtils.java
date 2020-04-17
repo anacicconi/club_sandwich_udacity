@@ -10,18 +10,27 @@ import org.json.JSONObject;
 
 public class JsonUtils {
 
+    private static final String NAME = "name";
+    private static final String MAIN_NAME = "mainName";
+    private static final String ALSO_KNOWN_AS = "alsoKnownAs";
+    private static final String PLACE_OF_ORIGIN = "placeOfOrigin";
+    private static final String DESCRIPTION = "description";
+    private static final String IMAGE = "image";
+    private static final String INGREDIENTS = "ingredients";
+
     public static Sandwich parseSandwichJson(String json) {
         Sandwich sandwich = null;
 
+        // optString -> add a fallback if the key is not in the Json
         try {
             JSONObject sandwichJson = new JSONObject(json);
-            JSONObject name = sandwichJson.getJSONObject("name");
-            String mainName = name.getString("mainName");
-            JSONArray alsoKnownAs = name.getJSONArray("alsoKnownAs");
-            String placeOfOrigin = sandwichJson.getString("placeOfOrigin");
-            String description = sandwichJson.getString("description");
-            String image = sandwichJson.getString("image");
-            JSONArray ingredients = sandwichJson.getJSONArray("ingredients");
+            JSONObject name = sandwichJson.getJSONObject(NAME);
+            String mainName = name.optString(MAIN_NAME, "Sandwich");
+            String placeOfOrigin = sandwichJson.optString(PLACE_OF_ORIGIN, "Unknown");
+            String description = sandwichJson.optString(DESCRIPTION, "Unknown");
+            String image = sandwichJson.optString(IMAGE, null);
+            JSONArray alsoKnownAs = name.getJSONArray(ALSO_KNOWN_AS);
+            JSONArray ingredients = sandwichJson.getJSONArray(INGREDIENTS);
 
             List<String> alsoKnownAsList = parseJsonArray(alsoKnownAs);
             List<String> ingredientsList = parseJsonArray(ingredients);

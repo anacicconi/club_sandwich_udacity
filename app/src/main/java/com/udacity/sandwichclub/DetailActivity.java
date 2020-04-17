@@ -20,12 +20,8 @@ public class DetailActivity extends AppCompatActivity {
 
     ImageView ingredientsIv = null;
     TextView originTv = null;
-    TextView originTvLabel = null;
     TextView descriptionTv = null;
-    TextView descriptionTvLabel = null;
     TextView ingredientsTv = null;
-    TextView ingredientsTvLabel = null;
-    TextView alsoKnownAsTvLabel = null;
     TextView alsoKnownAsTv = null;
 
     @Override
@@ -35,13 +31,9 @@ public class DetailActivity extends AppCompatActivity {
 
         ingredientsIv = findViewById(R.id.image_iv);
         originTv = findViewById(R.id.origin_tv);
-        originTvLabel = findViewById(R.id.origin_tv_label);
         descriptionTv = findViewById(R.id.description_tv);
-        descriptionTvLabel = findViewById(R.id.description_tv_label);
         ingredientsTv = findViewById(R.id.ingredients_tv);
-        ingredientsTvLabel = findViewById(R.id.ingredients_tv_label);
         alsoKnownAsTv = findViewById(R.id.also_known_tv);
-        alsoKnownAsTvLabel = findViewById(R.id.also_known_tv_label);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -73,37 +65,42 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(Sandwich sandwich) {
-        setTitle(sandwich.getMainName());
-
-        if(!sandwich.getImage().isEmpty()) {
-            ingredientsIv.setVisibility(View.VISIBLE);
-            Picasso.with(this)
-                .load(sandwich.getImage())
-                .into(ingredientsIv);
+        // check if the value received on Json is not empty like a "" string
+        if(!sandwich.getMainName().isEmpty()) {
+            setTitle(sandwich.getMainName());
+        } else {
+            setTitle(getString(R.string.sandwich));
         }
 
+        ingredientsIv.setVisibility(View.VISIBLE);
+        Picasso.with(this)
+            .load(sandwich.getImage())
+            .placeholder(R.drawable.placeholder)
+            .error(R.drawable.placeholder)
+            .into(ingredientsIv);
+
         if(!sandwich.getAlsoKnownAs().isEmpty()) {
-            alsoKnownAsTvLabel.setVisibility(View.VISIBLE);
-            alsoKnownAsTv.setVisibility(View.VISIBLE);
             alsoKnownAsTv.setText(convertListToCommaString(sandwich.getAlsoKnownAs()));
+        } else {
+            alsoKnownAsTv.setText(R.string.unknown);
         }
 
         if(!sandwich.getPlaceOfOrigin().isEmpty()) {
-            originTvLabel.setVisibility(View.VISIBLE);
-            originTv.setVisibility(View.VISIBLE);
             originTv.setText(sandwich.getPlaceOfOrigin());
+        } else {
+            originTv.setText(R.string.unknown);
         }
 
         if(!sandwich.getDescription().isEmpty()) {
-            descriptionTvLabel.setVisibility(View.VISIBLE);
-            descriptionTv.setVisibility(View.VISIBLE);
             descriptionTv.setText(sandwich.getDescription());
+        } else {
+            descriptionTv.setText(R.string.unknown);
         }
 
         if(!sandwich.getIngredients().isEmpty()) {
-            ingredientsTvLabel.setVisibility(View.VISIBLE);
-            ingredientsTv.setVisibility(View.VISIBLE);
             ingredientsTv.setText(convertListToCommaString(sandwich.getIngredients()));
+        } else {
+            ingredientsTv.setText(R.string.unknown);
         }
     }
 
